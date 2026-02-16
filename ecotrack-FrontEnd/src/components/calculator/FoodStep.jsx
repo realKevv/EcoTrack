@@ -1,59 +1,86 @@
 import React from 'react';
-import { Utensils, Leaf, Globe } from 'lucide-react';
+import { Utensils, Globe, TrendingDown } from 'lucide-react';
+import InfoTooltip from './InfoTooltip';
 
 const FoodStep = ({ data, onChange }) => {
     const { diet, local } = data || { diet: 'average', local: false };
 
     const diets = [
-        { id: 'vegan', label: 'Vegana', desc: 'Solo vegetali. Impatto minimo.', color: 'bg-green-100 border-green-300 text-green-800' },
-        { id: 'vegetarian', label: 'Vegetariana', desc: 'No carne/pesce. Uova/latticini ok.', color: 'bg-lime-100 border-lime-300 text-lime-800' },
-        { id: 'average', label: 'Onnivora Media', desc: 'Carne alcune volte a settimana.', color: 'bg-orange-100 border-orange-300 text-orange-800' },
-        { id: 'highMeat', label: 'Molta Carne', desc: 'Carne rossa quasi ogni giorno.', color: 'bg-red-100 border-red-300 text-red-800' },
+        { id: 'vegan', label: 'Vegana', desc: 'Solo vegetali.', impact: 'Basso', icon: '🌱', co2: '1.5 kg', borderColor: 'border-green-400', bgColor: 'bg-green-50' },
+        { id: 'vegetarian', label: 'Vegetariana', desc: 'No carne/pesce.', impact: 'Medio-Basso', icon: '🥗', co2: '2.5 kg', borderColor: 'border-lime-400', bgColor: 'bg-lime-50' },
+        { id: 'average', label: 'Onnivora', desc: 'Carne moderata.', impact: 'Medio', icon: '🍽️', co2: '3.8 kg', borderColor: 'border-orange-400', bgColor: 'bg-orange-50' },
+        { id: 'highMeat', label: 'Molta Carne', desc: 'Carne ogni giorno.', impact: 'Alto', icon: '🥩', co2: '5.5 kg', borderColor: 'border-red-400', bgColor: 'bg-red-50' },
     ];
 
+    const selectedDiet = diets.find(d => d.id === diet) || diets[2];
+
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-
-            <div>
-                <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    <Utensils className="text-orange-500" /> Abitudini Alimentari
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {diets.map((d) => (
-                        <button
-                            key={d.id}
-                            onClick={() => onChange({ ...data, diet: d.id })}
-                            className={`p-4 rounded-xl border-2 text-left transition-all ${diet === d.id
-                                    ? `${d.color} shadow-md scale-[1.02]`
-                                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
-                                }`}
-                        >
-                            <div className="font-bold text-lg">{d.label}</div>
-                            <div className="text-sm opacity-80">{d.desc}</div>
-                        </button>
-                    ))}
-                </div>
+        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <Utensils className="text-orange-500" size={20} />
+                    Alimentazione
+                </h2>
+                <InfoTooltip content="Le tue scelte alimentari hanno un grande impatto sull'ambiente." />
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <Globe className="text-emerald-600" />
-                    <div>
-                        <div className="font-semibold text-slate-800">Prodotti a Km 0</div>
-                        <div className="text-sm text-slate-500">Prediligo cibo locale e di stagione</div>
+            <div className="grid grid-cols-2 gap-3">
+                {diets.map((d) => (
+                    <button
+                        key={d.id}
+                        onClick={() => onChange({ ...data, diet: d.id })}
+                        className={`group relative p-4 rounded-xl border-2 text-left transition-all ${diet === d.id
+                            ? `${d.borderColor} ${d.bgColor} shadow-sm`
+                            : 'bg-white border-slate-100 hover:border-slate-200 text-slate-600 hover:shadow-sm'
+                            }`}
+                    >
+                        <div className="text-2xl mb-2">{d.icon}</div>
+                        <div className="font-bold text-sm mb-0.5">{d.label}</div>
+                        <div className="text-[10px] text-slate-400 mb-2">{d.desc}</div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wide opacity-60">
+                                {d.impact}
+                            </span>
+                            <span className="text-xs font-bold">{d.co2}</span>
+                        </div>
+                        {diet === d.id && (
+                            <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+                                <span className="text-emerald-600 text-[8px] font-bold">✓</span>
+                            </div>
+                        )}
+                    </button>
+                ))}
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <Globe className="text-emerald-600" size={20} />
+                        </div>
+                        <div>
+                            <div className="font-bold text-sm text-slate-800">Prodotti a Km 0</div>
+                            <div className="text-[10px] text-slate-400">Sostenibilità locale</div>
+                        </div>
                     </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={local || false}
+                            onChange={(e) => onChange({ ...data, local: e.target.checked })}
+                            className="sr-only peer"
+                        />
+                        <div className="w-10 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-emerald-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                    </label>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={local || false}
-                        onChange={(e) => onChange({ ...data, local: e.target.checked })}
-                        className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                </label>
             </div>
 
+            <div className="bg-orange-50 border border-orange-100 p-3 rounded-lg flex items-start gap-2">
+                <TrendingDown size={14} className="text-orange-500 mt-0.5 shrink-0" />
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                    La dieta <span className="font-bold">{selectedDiet.label}</span> produce circa {selectedDiet.co2} di emissioni giornaliere.
+                </p>
+            </div>
         </div>
     );
 };

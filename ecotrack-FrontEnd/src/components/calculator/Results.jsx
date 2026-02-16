@@ -1,20 +1,20 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Share2, RefreshCw } from 'lucide-react';
+import { Share2, RefreshCw, Trophy } from 'lucide-react'; // <--- AGGIUNGI TROPHY
 
-const Results = ({ total, breakdown, onRetake }) => {
+// AGGIUNGI xpGained e currentLevel alle props
+const Results = ({ total, breakdown, onRetake, xpGained, currentLevel }) => {
+
     const data = [
-        { name: 'Trasporti', value: breakdown.transport, color: '#10b981' }, // emerald-500
-        { name: 'Viaggi', value: breakdown.travel, color: '#3b82f6' }, // blue-500
-        { name: 'Casa', value: breakdown.home, color: '#f59e0b' }, // amber-500
-        { name: 'Cibo', value: breakdown.food, color: '#ef4444' }, // red-500
-        { name: 'Shopping', value: breakdown.shopping, color: '#8b5cf6' }, // violet-500
-        { name: 'Rifiuti', value: breakdown.waste, color: '#64748b' }, // slate-500
+        { name: 'Trasporti', value: breakdown.transport, color: '#10b981' },
+        { name: 'Viaggi', value: breakdown.travel, color: '#3b82f6' },
+        { name: 'Casa', value: breakdown.home, color: '#f59e0b' },
+        { name: 'Cibo', value: breakdown.food, color: '#ef4444' },
+        { name: 'Shopping', value: breakdown.shopping, color: '#8b5cf6' },
+        { name: 'Rifiuti', value: breakdown.waste, color: '#64748b' },
     ].filter(d => d.value > 0);
 
-    // Average Italian footprint approx 5-7 tons (5000-7000 kg)
     const average = 6000;
-    const percentage = Math.round((total / average) * 100);
 
     let message = '';
     let color = '';
@@ -32,6 +32,31 @@ const Results = ({ total, breakdown, onRetake }) => {
 
     return (
         <div className="animate-in fade-in zoom-in duration-500 space-y-8 text-center bg-white p-4 sm:p-8 rounded-2xl">
+
+            {/* --- SEZIONE GAMIFICATION (NUOVA) --- */}
+            {xpGained > 0 && (
+                <div className="bg-gradient-to-r from-amber-50 to-yellow-100 border border-amber-200 p-6 rounded-2xl flex items-center justify-center gap-6 shadow-sm mb-6 relative overflow-hidden">
+                    <div className="bg-amber-400 text-white p-4 rounded-full shadow-lg animate-bounce">
+                        <Trophy size={32} fill="white" />
+                    </div>
+                    <div className="text-left z-10">
+                        <h3 className="text-amber-900 font-extrabold text-xl">Congratulazioni!</h3>
+                        <p className="text-amber-700 font-medium">
+                            Hai guadagnato <span className="text-3xl font-black text-amber-600">+{xpGained} XP</span>
+                        </p>
+                        {currentLevel && (
+                            <div className="mt-1 inline-block bg-white/60 px-2 py-0.5 rounded text-xs font-bold text-amber-800 uppercase tracking-wider">
+                                Livello Attuale: {currentLevel}
+                            </div>
+                        )}
+                    </div>
+                    {/* Decorazione sfondo */}
+                    <div className="absolute -right-6 -top-6 text-yellow-200/50 rotate-12">
+                        <Trophy size={120} />
+                    </div>
+                </div>
+            )}
+            {/* ------------------------------------- */}
 
             <div>
                 <h2 className="text-3xl font-extrabold text-slate-800 mb-2">Il tuo Risultato</h2>

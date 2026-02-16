@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-
-// 1. IMPORTA LA TUA FOTO LOCALE
-// Se non esistono, questi import potrebbero rompere il codice se non gestiti.
-// Per sicurezza, usiamo un try-catch logico nel rendering o fallback.
 import montagnaGanzaria from '../assets/Montagna_Ganzaria.jpg';
 import Etna from '../assets/Etna.jpg';
 import Ragusa from '../assets/Ragusa.jpg';
 
 // 2. LISTA IMMAGINI SICURA
 const rawImages = [
-    // Se l'import fallisce (undefined), usiamo un placeholder
     montagnaGanzaria || "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
     Etna || "https://images.unsplash.com/photo-1542385151-efd9000785a0?auto=format&fit=crop&w=800&q=80",
     Ragusa || "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80",
@@ -20,17 +15,14 @@ const rawImages = [
     "https://images.unsplash.com/photo-1501854140884-074bf86ee91c?auto=format&fit=crop&w=800&q=80", // Montagna
 ];
 
-// Filtra eventuali array vuoti per evitare crash
 const images = rawImages.filter(img => img);
 
-// Duplichiamo le immagini per creare l'effetto "infinito" senza buchi
 const carouselImages = [...images, ...images, ...images, ...images];
 
 const CarouselSection = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Blocchiamo l'animazione se l'utente ha aperto un'immagine o ci passa sopra col mouse
     const isPaused = selectedImage !== null || isHovered;
 
     return (

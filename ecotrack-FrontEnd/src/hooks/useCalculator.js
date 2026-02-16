@@ -9,9 +9,28 @@ export const useCalculator = () => {
         setLoading(true);
         setError(null);
 
+        let url = 'http://localhost:8080/api/calculate';
+
         try {
-            // API CALL TO SPRING BOOT
-            const response = await fetch('http://localhost:8080/api/calculate', {
+            const storedUser = localStorage.getItem('user');
+
+            if (storedUser) {
+                const userObj = JSON.parse(storedUser);
+
+                const userId = userObj.id || userObj.userId;
+
+                if (userId) {
+                    url = `${url}?userId=${userId}`;
+                    console.log("✅ Utente riconosciuto (ID " + userId + "). Invio richiesta per XP.");
+                }
+            }
+        } catch (e) {
+            console.error("Errore lettura utente:", e);
+        }
+
+        try {
+            // Usiamo l'URL dinamico (che ora potrebbe avere l'ID)
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,11 +44,7 @@ export const useCalculator = () => {
 
             const data = await response.json();
 
-            // Expected format from Java Controller:
-            // {
-            //   total: number,
-            //   breakdown: { transport: number, travel: number, ... }
-            // }
+            console.log("RISPOSTA SERVER:", data);
 
             setResults(data);
             return data;
